@@ -3,7 +3,7 @@ const canvas = document.getElementById('main');
 const context = canvas.getContext('2d', { willReadFrequently: true });
 
 context.canvas.width  = window.innerWidth;
-context.canvas.height = window.innerHeight - 130;
+context.canvas.height = window.innerHeight - 300;
 
 
 const undoButton = document.getElementById("undoButton");
