@@ -2,11 +2,8 @@
 const canvas = document.getElementById('main');
 const context = canvas.getContext('2d', { willReadFrequently: true });
 
-context.canvas.width  = window.innerWidth;
-context.canvas.height = window.innerHeight - 200;
-
-canvas.heigth = window.innerHeight - 200; 
-
+canvas.width  = window.innerWidth;
+canvas.height = window.innerHeight - 100;
 
 
 const undoButton = document.getElementById("undoButton");
@@ -127,7 +124,6 @@ class DrawApp{
 
 
     #UndoButton(){
-
         undoButton.addEventListener("click",()=>{
             const lastChange = this.actions.pop();
             
@@ -189,7 +185,6 @@ class DrawApp{
     }
 
     #BrushSize(){
-
         brushRange.addEventListener("change",()=>{
             this.brushSize = brushRange.value;
             this.radius = brushRange.value;
@@ -200,6 +195,7 @@ class DrawApp{
     #BrushColor(){
         brushColor.addEventListener("change",()=>{
             this.currentColor = brushColor.value;
+            
         })
 
     }
@@ -268,6 +264,4 @@ const deviceType = () => {
 var Draw = new DrawApp();
 
 Draw.init();
-
-
 
