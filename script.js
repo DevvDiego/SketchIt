@@ -3,9 +3,9 @@ const canvas = document.getElementById('main');
 const context = canvas.getContext('2d', { willReadFrequently: true });
 
 context.canvas.width  = window.innerWidth;
-context.canvas.height = window.innerHeight - 300;
+context.canvas.height = window.innerHeight - 200;
 
-canvas.heigth = window.innerHeight - 300; 
+canvas.heigth = window.innerHeight - 200; 
 
 
 
