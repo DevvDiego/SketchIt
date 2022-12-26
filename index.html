@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p2 drawing</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    
+<div id="fullscreenCanvas">
+
+    <canvas id="main"></canvas>
+
+</div>
+
+
+
+<div id="tools">
+    <button class="tool" id="undoButton">Undo</button>
+    <button class="tool" id="clearButton">Clear</button>
+    
+    <input class="tool" id="brushRange" type="range" min="3" max="20">
+    <select name="brushType" id="brushType">
+        <option value="dots">Dots</option>
+        <option value="lines">Lines</option>
+    </select>
+
+    <input class="tool" name="color" id="brushColor" type="color">
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
