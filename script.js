@@ -5,6 +5,9 @@ const context = canvas.getContext('2d', { willReadFrequently: true });
 context.canvas.width  = window.innerWidth;
 context.canvas.height = window.innerHeight - 300;
 
+canvas.heigth = window.innerHeight - 300; 
+
+
 
 const undoButton = document.getElementById("undoButton");
 const clearButton = document.getElementById("clearButton");
