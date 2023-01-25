@@ -11,7 +11,7 @@ const clearButton = document.getElementById("clearButton");
 const brushType = document.getElementById("brushType");
 const brushRange = document.getElementById("brushRange");
 const brushColor = document.getElementById("brushColor");
-
+const saveButton = document.getElementById("saveButton");
 
 class DrawApp{
 
@@ -25,25 +25,38 @@ class DrawApp{
 
     //priv functions
 
+    /**
+     * When called, saves the current canvas into the
+     * actions array of the object
+     * @returns nothing
+     */
+    #CheckActionsMade(){
+        
+        this.actions.push(
+            context.getImageData(0,0,canvas.width,canvas.height)
+        );
 
-    #CheckActionsMade(actionsMade){
-        if(actionsMade >= 50){
-            this.actions.push(
-                context.getImageData(0,0,canvas.width,canvas.height)
-            );
+        return
+
+            //this method is pretty resource consuming and isnt the best
+
+        // if(actionsMade >= 50){
+        //     this.actions.push(
+        //         context.getImageData(0,0,canvas.width,canvas.height)
+        //     );
             
-            actionsMade = 0;
-            return actionsMade;
+        //     actionsMade = 0;
+        //     return actionsMade;
 
-        }else if(actionsMade<50){
-            actionsMade++;
+        // }else if(actionsMade<50){
+        //     actionsMade++;
 
-            return actionsMade;
+        //     return actionsMade;
 
-        }else{
-            //do nothing
-            return;
-        }
+        // }else{
+        //     //do nothing
+        //     return;
+        // }
     }
 
     #DrawFigure(ev){
@@ -54,7 +67,7 @@ class DrawApp{
             context.moveTo(this.lastX, this.lastY);
             context.lineTo(ev.offsetX, ev.offsetY);
             context.strokeStyle = this.currentColor;
-            context.lineWidth = this.brushSize;
+            context.lineWidth = this.brushSize*2;
             context.stroke();
 
 
@@ -77,7 +90,6 @@ class DrawApp{
     }
 
     #CanvasEventListeners(){
-        let actionsMade = 0;
 
         canvas.addEventListener("pointerdown", (ev) =>{
 
@@ -96,7 +108,7 @@ class DrawApp{
 
             this.#DrawFigure(ev);
 
-            actionsMade = this.#CheckActionsMade(actionsMade);
+            // actionsMade = this.#CheckActionsMade(actionsMade);
 
 
         });
@@ -105,6 +117,7 @@ class DrawApp{
         canvas.addEventListener("pointerup", () => {
             this.isDrawing = false;
 
+            this.#CheckActionsMade();
         });
 
 
@@ -173,6 +186,11 @@ class DrawApp{
         clearButton.addEventListener("click",()=>{
             context.clearRect(0,0,canvas.width,canvas.height);
             this.actions = [];
+
+            //set the first canvas saved action to a blank one
+            this.actions.push(
+                context.getImageData(0,0,canvas.width,canvas.height)
+            );
         });
 
     }
@@ -200,6 +218,49 @@ class DrawApp{
 
     }
 
+    #SaveButton(){
+        // Convert canvas to image
+        saveButton.addEventListener("click", (e) => {
+            // Get the canvas element
+            var canvas = document.querySelector("canvas");
+
+            // Convert the canvas to a data URL
+            var dataURL = canvas.toDataURL();
+
+            // Create an image element
+            var img = document.createElement("img");
+
+            // Set the src of the image to the data URL
+            img.src = dataURL;
+
+            downloadImage(img.src);
+
+        });
+
+        // Save | Download image
+        function downloadImage(data, filename = 'untitled.jpeg') {
+            // Create a link element
+            var link = document.createElement("a");
+
+            // Set the href of the link to the data URL
+            link.href = data;
+
+            // Set the download attribute of the link to the desired file name
+            link.download = filename;
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Click the link to trigger the download
+            link.click();
+        }
+        // SaveButton.addEventListener("click",()=>{
+            
+        //     window.open( canvas.toDataURL("image/png") );
+
+        // })
+
+    }
 
     
 
@@ -223,7 +284,10 @@ class DrawApp{
 
         this.#CanvasEventListeners();
 
-
+        //set the first canvas saved action to a blank one
+        this.actions.push(
+            context.getImageData(0,0,canvas.width,canvas.height)
+        );
 
     }
 
@@ -233,6 +297,9 @@ class DrawApp{
     #initTools(){
         this.#UndoButton();
         this.#ClearButton();
+        this.#SaveButton();
+
+
         this.#BrushType();
         this.#BrushSize();
         this.#BrushColor();
