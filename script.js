@@ -76,7 +76,6 @@ class DrawApp{
             // Use the context to draw the circle
             context.beginPath();
             context.arc(ev.offsetX, ev.offsetY, this.radius, 0, Math.PI * 2, false);
-                console.log();
             context.fillStyle = this.currentColor;
             context.fill();
 
@@ -314,21 +313,10 @@ class DrawApp{
 } 
 
 
-const deviceType = () => {
-    const ua = navigator.userAgent;
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-        return "tablet";
-    }
-    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-        return "mobile";
-    }
-    return "desktop";
-};
 
 
 
-
-var Draw = new DrawApp();
+const Draw = new DrawApp();
 
 Draw.init();
 

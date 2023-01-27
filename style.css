@@ -34,8 +34,9 @@ html, body{
 canvas{
     display: block;
     /* background-color: rgb(135, 181, 186); */
+    /* border: 3px solid rgb(109, 247, 11); */
     border-bottom: 3px solid rgb(255, 255, 255);
-
+    
     touch-action: none;
 
 
@@ -56,7 +57,8 @@ canvas{
     row-gap: 10px;
     column-gap: 20px;
 
-    background-color: rgb(186, 186, 186);
+    background-color: #2c2c2c;
+
 }
 
 
@@ -71,7 +73,8 @@ canvas{
     border-radius: 7px;
 
 
-    filter: drop-shadow(0px 1px 1px rgb(75, 75, 75));
+    /* filter: drop-shadow(0px 1px 1px rgb(0, 0, 0)); */
+    /* filter: drop-shadow(0px 0px 3px rgb(245, 0, 0)); */
 
     transition: 80ms;
 }
@@ -92,22 +95,22 @@ canvas{
     border-radius: 7px;
 
 
-    filter: drop-shadow(0px 1px 1px rgb(75, 75, 75));
+    /* filter: drop-shadow(0px 1px 1px rgb(75, 75, 75)); */
 
     background-color: #f0f0f0;
 }
 
 
-input[type="color"] {
+#tools input[type="color"] {
 
 
-
+    /*transparent background*/
     background-color: #00000000;
     border: none;
 
     height: 30px;
     width: 30px;
 
-    border-radius: 10px ;
+    /* border-radius: 10px; */
 
 }
