@@ -26,14 +26,29 @@
 
     })
 
+    function prepDraw(e){
+        is_drawing = true;
+        ctx.beginPath();
+        ctx.moveTo(
+            e.clientX - root.offsetLeft,
+            e.clientY - root.offsetTop);
 
-    function move(){
-        console.log("move")
-        
     }
 
     function draw(){
+        if( is_drawing ){
+            ctx.moveTo(
+            e.clientX - root.offsetLeft,
+            e.clientY - root.offsetTop);
 
+            ctx.strokeStyle = draw_color;
+            ctx.lineWidth = draw_width;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.stroke();
+
+
+        }
     }
 
     
@@ -44,9 +59,8 @@
 class=" {_class} 
         border-2 border-secondary-700
         "
-        
-on:mousedown={move} on:mousemove={move}
-on:pointerdown={move} on:pointermove={move}
+
+on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
 > 
 
 </canvas>
