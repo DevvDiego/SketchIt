@@ -11,7 +11,7 @@
     let root;
     let ctx;
 
-    let fillStyle = "white";
+    let fillStyle = "red";
     let draw_color = "black";
     let draw_width = "2"
     let is_drawing = false;
@@ -19,15 +19,20 @@
 
     onMount(()=>{
         ctx = root.getContext("2d");
-        ctx.fillStyle = fillStyle;
+        ctx.fillStyle = "white";
         ctx.fillRect(0, 0, root.width, root.height)
 
 
 
     })
 
+
+
     function prepDraw(e){
+        console.log(e);
+        console.log(e.clientY - root.offsetTop);
         is_drawing = true;
+
         ctx.beginPath();
         ctx.moveTo(
             e.clientX - root.offsetLeft,
@@ -35,20 +40,25 @@
 
     }
 
-    function draw(){
-        if( is_drawing ){
-            ctx.moveTo(
+    function draw(e){
+        if( !is_drawing ) return;
+        
+        ctx.lineTo(
             e.clientX - root.offsetLeft,
-            e.clientY - root.offsetTop);
+            e.clientY - root.offsetTop
+        );
 
-            ctx.strokeStyle = draw_color;
-            ctx.lineWidth = draw_width;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.stroke();
+        ctx.fillStyle = "red";
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = draw_width;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
 
+        ctx.stroke();
+    }
 
-        }
+    function stopDraw(){
+        is_drawing = false;
     }
 
     
@@ -61,6 +71,7 @@ class=" {_class}
         "
 
 on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
+on:pointerover={stopDraw} on:pointerup={stopDraw}
 > 
 
 </canvas>
