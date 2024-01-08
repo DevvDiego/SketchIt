@@ -2,7 +2,7 @@
     import Canvas from "../components/Canvas.svelte";
 </script>
 
-<main>
+<main class="">
     <h1 class="text-2xl text-text-100">SketchIt app</h1>
 
     <Canvas   />
