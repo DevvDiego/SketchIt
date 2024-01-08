@@ -5,8 +5,8 @@
      * use this element only inside onMount() 
     */
     export let _class = "";
-    // let w;
-    // let h;
+    let rootBaseWidth;
+    let rootBaseWeight;
     
     let root;
     let ctx;
@@ -29,9 +29,15 @@
 
     })
 
+    // function resize(){
+    //     root.width = root.offsetWidth;
+    //     root.height = root.offsetHeight;
+    // }
+
 
 
     function prepDraw(e){
+        console.log("prep");
         is_drawing = true;
 
         ctx.beginPath();
@@ -44,6 +50,7 @@
     function draw(e){
         if( !is_drawing ) {return;}
         
+        console.log("draw");
         ctx.lineTo(
             e.clientX - root.offsetLeft,
             e.clientY - root.offsetTop
@@ -60,6 +67,7 @@
 
     function stopDraw(){
         is_drawing = false;
+        console.log("stup");
     }
 
     
@@ -73,7 +81,7 @@ class=" {_class}
         "
 
 on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
-on:pointerover={stopDraw} on:pointerup={stopDraw}
+ on:pointerup={stopDraw}
 > 
 
 </canvas>
