@@ -5,8 +5,8 @@
      * use this element only inside onMount() 
     */
     export let _class = "";
-    export let w = "180px";
-    export let h = "200px";
+    // let w;
+    // let h;
     
     let root;
     let ctx;
@@ -18,6 +18,9 @@
 
 
     onMount(()=>{
+        root.width = root.offsetWidth;
+        root.height = root.offsetHeight;
+
         ctx = root.getContext("2d");
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, root.width, root.height)
@@ -29,8 +32,6 @@
 
 
     function prepDraw(e){
-        console.log(e);
-        console.log(e.clientY - root.offsetTop);
         is_drawing = true;
 
         ctx.beginPath();
@@ -41,7 +42,7 @@
     }
 
     function draw(e){
-        if( !is_drawing ) return;
+        if( !is_drawing ) {return;}
         
         ctx.lineTo(
             e.clientX - root.offsetLeft,
@@ -65,9 +66,10 @@
 
 </script>
 
-<canvas bind:this={root} width={w} height={h} 
+<canvas bind:this={root} 
 class=" {_class} 
         border-2 border-secondary-700
+        w-full h-96
         "
 
 on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
