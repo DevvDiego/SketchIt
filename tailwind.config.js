@@ -3,6 +3,7 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      // https://www.realtimecolors.com/?colors=fecdcd-141414-fc787f-455952-fa2929&fonts=Poppins-Poppins
       colors: {
         'text': {
           50: '#fee6e6',
