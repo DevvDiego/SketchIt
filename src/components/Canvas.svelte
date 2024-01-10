@@ -13,12 +13,16 @@
         lineJoin: "round",
     }
 
-    let data = {
-        content: []
-    }
-
-    let currentData;
-    let biggestData;
+    // let data = {
+    //     content: [],
+    //     canvasWidth: 0,
+    //     canvasHeight: 0
+    // }
+    let data;
+    let biggestData = {
+        width: 0,
+        height: 0,
+    };
 
     let is_drawing = false;
     
@@ -26,13 +30,39 @@
     onMount(()=>{
         ctx = canvas.getContext("2d");
 
+        /**
+         * ! How to make it save the image even if it is smaller than he bigger one?
+         * ! it looks like the saving method is wrong
+        */
+
+        function compareDataSize(){
+            //if data is the same wdth and hght
+            if(data.width == biggestData.width && data.height == biggestData.height){
+                return;
+            }
+
+            //if the data is different in any direction
+            if( data.width > biggestData.width || data.height > biggestData.height ){
+                biggestData = data;
+                return;
+            }
+
+            //if the data is smaller than the last
+            if( data.width < biggestData.width || data.height < biggestData.height ){
+                data = biggestData
+                return;
+            }
+
+            return;
+        }
+
         function save(){
-            currentData = ctx.getImageData(0,0,canvas.width,canvas.height)
-            console.log(currentData);
+            data = ctx.getImageData(0,0,canvas.width,canvas.height)
+            compareDataSize();
         }
 
         function restore(){
-            ctx.putImageData(currentData,0,0);
+            ctx.putImageData(data,0,0);
         }
         
         function resize(){
@@ -85,6 +115,7 @@
         ctx.lineJoin = config.lineJoin;
 
         ctx.stroke();
+        
     }
 
     function stopDraw(){
@@ -98,7 +129,8 @@
 <canvas 
 bind:this={canvas}
 on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
-on:pointerup={stopDraw}
+on:pointerup={stopDraw} 
+
 
 class=" {_class} 
         border-2 border-primary-500
