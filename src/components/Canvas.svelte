@@ -13,16 +13,7 @@
         lineJoin: "round",
     }
 
-    // let data = {
-    //     content: [],
-    //     canvasWidth: 0,
-    //     canvasHeight: 0
-    // }
-    let data;
-    let biggestData = {
-        width: 0,
-        height: 0,
-    };
+    let actions = [];
 
     let is_drawing = false;
     
@@ -30,43 +21,32 @@
     onMount(()=>{
         ctx = canvas.getContext("2d");
 
-        /**
-         * ! How to make it save the image even if it is smaller than he bigger one?
-         * ! it looks like the saving method is wrong
-        */
-
-        function compareDataSize(){
-            //if data is the same wdth and hght
-            if(data.width == biggestData.width && data.height == biggestData.height){
-                return;
-            }
-
-            //if the data is different in any direction
-            if( data.width > biggestData.width || data.height > biggestData.height ){
-                biggestData = data;
-                return;
-            }
-
-            //if the data is smaller than the last
-            if( data.width < biggestData.width || data.height < biggestData.height ){
-                data = biggestData
-                return;
-            }
-
-            return;
-        }
-
-        function save(){
-            data = ctx.getImageData(0,0,canvas.width,canvas.height)
-            compareDataSize();
-        }
-
         function restore(){
-            ctx.putImageData(data,0,0);
+            // Limpia el lienzo
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Reproduce todas las acciones de dibujo en el lienzo
+            console.log(actions);
+            for (let action of actions) {
+                if (action.type === 'begin') {
+                    ctx.beginPath();
+                    ctx.moveTo(action.x, action.y);
+
+                } else if (action.type === 'draw') {
+                    ctx.fillStyle = action.config.fillStyle;
+                    ctx.strokeStyle = action.config.strokeStyle;
+                    ctx.lineWidth = action.config.lineWidth;
+                    ctx.lineCap = action.config.lineCap;
+                    ctx.lineJoin = action.config.lineJoin;
+
+                    ctx.lineTo(action.x, action.y);
+                    ctx.stroke();
+
+                }
+            }
         }
         
         function resize(){
-            save();
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
             restore();
@@ -97,6 +77,14 @@
             e.clientX - canvas.offsetLeft,
             e.clientY - canvas.offsetTop);
 
+        // Guarda la acción de inicio de dibujo en el array de acciones
+        actions.push({
+            type: 'begin',
+            x: e.clientX - canvas.offsetLeft,
+            y: e.clientY - canvas.offsetTop,
+            config: config
+        });
+
     }
 
     function draw(e){
@@ -106,6 +94,14 @@
             e.clientX - canvas.offsetLeft,
             e.clientY - canvas.offsetTop
         );
+
+                // Guarda la acción de dibujo en el array de acciones
+        actions.push({
+            type: 'draw',
+            x: e.clientX - canvas.offsetLeft,
+            y: e.clientY - canvas.offsetTop,
+            config: config
+        });
 
         //is it really neccessary to rewrite these every time?
         ctx.fillStyle = config.fillStyle;
