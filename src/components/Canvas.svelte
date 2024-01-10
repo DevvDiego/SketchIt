@@ -3,6 +3,8 @@
 
     
     export let _class = "";
+    export let isMounted = false;
+
     let canvas;
     let ctx;
     let config = {
@@ -12,6 +14,7 @@
         lineCap: "round",
         lineJoin: "round",
     }
+
 
     let actions = [];
 
@@ -66,6 +69,7 @@
         
         resize();
 
+        isMounted = true;
         return ()=>{window.removeEventListener("resize",resize)}
     })
 
@@ -153,8 +157,4 @@ class=" {_class}
 </canvas>
 
 <style>
-    canvas{
-        
-    }
-
 </style>
