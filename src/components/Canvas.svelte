@@ -163,11 +163,14 @@ on:pointerup={stopDraw}
 
 class=" {_class} 
         border-2 border-primary-500
-        w-full h-4/6
+        w-full
         "
 > 
 
 </canvas>
 
 <style>
+    canvas{
+        min-height: 75vh;
+    }
 </style>
