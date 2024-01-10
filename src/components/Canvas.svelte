@@ -22,12 +22,11 @@
         ctx = canvas.getContext("2d");
 
         function restore(){
-            // Limpia el lienzo
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Reproduce todas las acciones de dibujo en el lienzo
-            console.log(actions);
             for (let action of actions) {
+
                 if (action.type === 'begin') {
                     ctx.beginPath();
                     ctx.moveTo(action.x, action.y);
@@ -43,6 +42,7 @@
                     ctx.stroke();
 
                 }
+
             }
         }
         
@@ -55,17 +55,33 @@
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         
-        window.addEventListener("resize", resize);
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        resize();
-
-
+        //using debounce so its waits some time to redraw
+        window.addEventListener("resize", debounce(resize,200));
         
-
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        
+        /**
+         * ! Add touch respective event listeners
+        */
+        
+        resize();
 
         return ()=>{window.removeEventListener("resize",resize)}
     })
 
+    function debounce(func, wait) {
+        let timeout;
+
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
 
 
 
@@ -124,18 +140,21 @@
 
 <canvas 
 bind:this={canvas}
-on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
+on:pointerdown={prepDraw} on:pointermove={draw}
 on:pointerup={stopDraw} 
 
 
 class=" {_class} 
         border-2 border-primary-500
-        w-full h-96
+        w-full h-4/6
         "
 > 
 
 </canvas>
 
 <style>
+    canvas{
+        
+    }
 
 </style>
