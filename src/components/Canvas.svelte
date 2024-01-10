@@ -15,6 +15,8 @@
         lineJoin: "round",
     }
 
+    let scale = 1;
+    let scaleStep = 0.1;
 
     let actions = [];
 
@@ -87,6 +89,17 @@
         };
     };
 
+    // function zoomIn() {
+    //     scale += scaleStep;
+    //     ctx.scale(scale, scale);
+    //     restore();
+    // }
+
+    // function zoomOut() {
+    //     scale -= scaleStep;
+    //     ctx.scale(scale, scale);
+    //     restore();
+    // }
 
 
     function prepDraw(e){
