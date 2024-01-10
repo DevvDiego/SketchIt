@@ -1,87 +1,109 @@
 <script>
     import { onMount } from "svelte";
+
     
-    /**
-     * use this element only inside onMount() 
-    */
     export let _class = "";
-    let rootBaseWidth;
-    let rootBaseWeight;
-    
-    let root;
+    let canvas;
     let ctx;
+    let config = {
+        fillStyle: "white",
+        strokeStyle: "red",
+        lineWidth: "2",
+        lineCap: "round",
+        lineJoin: "round",
+    }
 
-    let fillStyle = "red";
-    let draw_color = "black";
-    let draw_width = "2"
+    let data = {
+        content: []
+    }
+
+    let currentData;
+    let biggestData;
+
     let is_drawing = false;
-
-
+    
+    
     onMount(()=>{
-        root.width = root.offsetWidth;
-        root.height = root.offsetHeight;
+        ctx = canvas.getContext("2d");
 
-        ctx = root.getContext("2d");
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, root.width, root.height)
+        function save(){
+            currentData = ctx.getImageData(0,0,canvas.width,canvas.height)
+            console.log(currentData);
+        }
+
+        function restore(){
+            ctx.putImageData(currentData,0,0);
+        }
+        
+        function resize(){
+            save();
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            restore();
+        }
+
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        window.addEventListener("resize", resize);
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        resize();
 
 
+        
 
+
+        return ()=>{window.removeEventListener("resize",resize)}
     })
 
-    // function resize(){
-    //     root.width = root.offsetWidth;
-    //     root.height = root.offsetHeight;
-    // }
 
 
 
     function prepDraw(e){
-        console.log("prep");
         is_drawing = true;
 
         ctx.beginPath();
         ctx.moveTo(
-            e.clientX - root.offsetLeft,
-            e.clientY - root.offsetTop);
+            e.clientX - canvas.offsetLeft,
+            e.clientY - canvas.offsetTop);
 
     }
 
     function draw(e){
         if( !is_drawing ) {return;}
         
-        console.log("draw");
         ctx.lineTo(
-            e.clientX - root.offsetLeft,
-            e.clientY - root.offsetTop
+            e.clientX - canvas.offsetLeft,
+            e.clientY - canvas.offsetTop
         );
 
-        ctx.fillStyle = "red";
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = draw_width;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+        //is it really neccessary to rewrite these every time?
+        ctx.fillStyle = config.fillStyle;
+        ctx.strokeStyle = config.strokeStyle;
+        ctx.lineWidth = config.lineWidth;
+        ctx.lineCap = config.lineCap;
+        ctx.lineJoin = config.lineJoin;
 
         ctx.stroke();
     }
 
     function stopDraw(){
         is_drawing = false;
-        console.log("stup");
     }
 
     
 
 </script>
 
-<canvas bind:this={root} 
+<canvas 
+bind:this={canvas}
+on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
+on:pointerup={stopDraw}
+
 class=" {_class} 
-        border-2 border-secondary-700
+        border-2 border-primary-500
         w-full h-96
         "
-
-on:pointerdown|preventDefault={prepDraw} on:pointermove|preventDefault={draw}
- on:pointerup={stopDraw}
 > 
 
 </canvas>
