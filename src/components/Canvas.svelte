@@ -9,7 +9,7 @@
     let ctx;
     let config = {
         fillStyle: "white",
-        strokeStyle: "red",
+        strokeStyle: "purple",
         lineWidth: "2",
         lineCap: "round",
         lineJoin: "round",
@@ -28,6 +28,7 @@
 
         function restore(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
 
             // Reproduce todas las acciones de dibujo en el lienzo
             for (let action of actions) {
@@ -63,7 +64,7 @@
         //using debounce so its waits some time to redraw
         window.addEventListener("resize", debounce(resize,200));
         
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
         
         /**
          * ! Add touch respective event listeners
@@ -158,7 +159,7 @@
 <canvas 
 bind:this={canvas}
 on:pointerdown={prepDraw} on:pointermove={draw}
-on:pointerup={stopDraw} 
+on:pointerup={stopDraw} on:pointerleave={stopDraw}
 
 
 class=" {_class} 
