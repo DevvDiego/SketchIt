@@ -55,9 +55,10 @@
         function resize(){
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
+
             restore();
         }
-        
+
         window.addEventListener("resize", debounce(resize,200) );
         resize();
 
@@ -90,7 +91,6 @@
 
 
     function prepDraw(e){
-        e.preventDefault();
         is_drawing = true;
 
         ctx.beginPath();
@@ -111,7 +111,6 @@
     //why i used touch none: 
     //https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not/48254578#48254578
     function draw(e){
-        e.preventDefault();
         
         if( !is_drawing ) {return;}
 
@@ -140,10 +139,8 @@
         
     }
 
-    function stopDraw(e){
-        e.preventDefault();
+    function stopDraw(){
         is_drawing = false;
-        console.log("ended");
     }
 
     // function zoomIn() {
@@ -168,10 +165,10 @@
 <canvas
     bind:this={canvas}
 
-    on:pointerdown={prepDraw}
-    on:pointermove={draw}
-    on:pointerup={stopDraw}
-    on:pointerleave={stopDraw}
+    on:pointerdown|preventDefault={prepDraw}
+    on:pointermove|preventDefault={draw}
+    on:pointerup|preventDefault={stopDraw}
+    on:pointerleave|preventDefault={stopDraw}
 
     class=" {_class} touch-none 
             border-2 border-primary-500
