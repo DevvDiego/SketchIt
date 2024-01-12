@@ -26,6 +26,28 @@
     onMount(()=>{
         ctx = canvas.getContext("2d");
 
+        function setEventListeners(){
+            window.addEventListener("resize", debounce(resize,200) );
+
+            // canvas.addEventListener("touchstart", (e)=>{ t_start(e) } )
+            // canvas.addEventListener("touchmove", (e)=>{ t_move(e) } )
+
+            canvas.addEventListener("pointerdown", (e)=>{prepDraw(e)} );
+            canvas.addEventListener("pointermove", (e)=>{draw(e)} );
+            canvas.addEventListener("pointerup", (e)=>{stopDraw(e)} );
+            canvas.addEventListener("pointerleave", (e)=>{stopDraw(e)} );
+
+        }
+
+        function removeEventListeners(){
+            window.removeEventListener("resize",resize)
+            canvas.removeEventListener("pointerdown", prepDraw());
+            canvas.removeEventListener("pointermove", draw());
+            canvas.removeEventListener("pointerup", stopDraw());
+            canvas.removeEventListener("pointerleave", stopDraw());
+
+        }
+
         function restore(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -61,21 +83,20 @@
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         
-        //using debounce so its waits some time to redraw
-        window.addEventListener("resize", debounce(resize,200));
-        
-
-        
-        /**
-         * ! Add touch respective event listeners
-        */
         
         resize();
 
         isMounted = true;
-        return ()=>{window.removeEventListener("resize",resize)}
+        return ()=>{removeEventListeners()}
     })
 
+    /**
+     * 
+     * Recieves a callback func that will execute only when the wait time is finished 
+     * 
+     * @param func callback
+     * @param wait miliseconds to wait
+     */
     function debounce(func, wait) {
         let timeout;
 
@@ -90,20 +111,9 @@
         };
     };
 
-    // function zoomIn() {
-    //     scale += scaleStep;
-    //     ctx.scale(scale, scale);
-    //     restore();
-    // }
-
-    // function zoomOut() {
-    //     scale -= scaleStep;
-    //     ctx.scale(scale, scale);
-    //     restore();
-    // }
-
 
     function prepDraw(e){
+        e.preventDefault();
         is_drawing = true;
 
         ctx.beginPath();
@@ -121,15 +131,19 @@
 
     }
 
+    //why i used touch none: 
+    //https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not/48254578#48254578
     function draw(e){
-        if( !is_drawing ) {return;}
+        e.preventDefault();
         
+        if( !is_drawing ) {return;}
+
         ctx.lineTo(
             e.clientX - canvas.offsetLeft,
             e.clientY - canvas.offsetTop
         );
 
-                // Guarda la acción de dibujo en el array de acciones
+        // Guarda la acción de dibujo en el array de acciones
         actions.push({
             type: 'draw',
             x: e.clientX - canvas.offsetLeft,
@@ -146,26 +160,46 @@
 
         ctx.stroke();
         
+        
     }
 
-    function stopDraw(){
+    function stopDraw(e){
+        e.preventDefault();
         is_drawing = false;
+        console.log("ended");
     }
+
+    // function zoomIn() {
+    //     scale += scaleStep;
+    //     ctx.scale(scale, scale);
+    //     restore();
+    // }
+
+    // function zoomOut() {
+    //     scale -= scaleStep;
+    //     ctx.scale(scale, scale);
+    //     restore();
+    // }
+
+
+
 
     
 
 </script>
 
-<canvas 
-bind:this={canvas}
-on:pointerdown={prepDraw} on:pointermove={draw}
-on:pointerup={stopDraw} on:pointerleave={stopDraw}
+<canvas
+    bind:this={canvas}
 
+    on:pointerdown={prepDraw}
+    on:pointermove={draw}
+    on:pointerup={stopDraw}
+    on:pointerleave={stopDraw}
 
-class=" {_class} 
-        border-2 border-primary-500
-        w-full
-        "
+    class=" {_class} touch-none 
+            border-2 border-primary-500
+            w-full
+            "
 > 
 
 </canvas>
