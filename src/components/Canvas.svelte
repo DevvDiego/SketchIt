@@ -9,14 +9,14 @@
     let ctx;
     let config = {
         fillStyle: "white",
-        strokeStyle: "purple",
-        lineWidth: "2",
+        strokeStyle: "orange",
+        lineWidth: "4",
         lineCap: "round",
         lineJoin: "round",
     }
 
-    let scale = 1;
-    let scaleStep = 0.1;
+    // let scale = 1;
+    // let scaleStep = 0.1;
 
     let actions = [];
 
@@ -27,10 +27,13 @@
         ctx = canvas.getContext("2d");
 
         function restore(){
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-            // Reproduce todas las acciones de dibujo en el lienzo
+            //No actions to draw
+            if ( actions.length < 1 ) {return};
+
+            // Redraw all actions
             for (let action of actions) {
 
                 if (action.type === 'begin') {
@@ -61,6 +64,15 @@
 
         window.addEventListener("resize", debounce(resize,200) );
         resize();
+
+        //Call config after resize due to it being the last config from the user
+        //Restablish user config
+        ctx.fillStyle = config.fillStyle;
+        ctx.strokeStyle = config.strokeStyle;
+        ctx.lineWidth = config.lineWidth;
+        ctx.lineCap = config.lineCap;
+        ctx.lineJoin = config.lineJoin;
+
 
         isMounted = true;
         return ()=>{
@@ -127,13 +139,6 @@
             config: config
         });
 
-        //is it really neccessary to rewrite these every time?
-        ctx.fillStyle = config.fillStyle;
-        ctx.strokeStyle = config.strokeStyle;
-        ctx.lineWidth = config.lineWidth;
-        ctx.lineCap = config.lineCap;
-        ctx.lineJoin = config.lineJoin;
-
         ctx.stroke();
         
         
@@ -171,7 +176,8 @@
     on:pointerleave|preventDefault={stopDraw}
 
     class=" {_class} touch-none 
-            border-2 border-primary-500
+            border-secondary-500 rounded-t-xl
+            border-b-[1px]
             w-full
             "
 > 
