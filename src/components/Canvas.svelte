@@ -26,28 +26,6 @@
     onMount(()=>{
         ctx = canvas.getContext("2d");
 
-        function setEventListeners(){
-            window.addEventListener("resize", debounce(resize,200) );
-
-            // canvas.addEventListener("touchstart", (e)=>{ t_start(e) } )
-            // canvas.addEventListener("touchmove", (e)=>{ t_move(e) } )
-
-            canvas.addEventListener("pointerdown", (e)=>{prepDraw(e)} );
-            canvas.addEventListener("pointermove", (e)=>{draw(e)} );
-            canvas.addEventListener("pointerup", (e)=>{stopDraw(e)} );
-            canvas.addEventListener("pointerleave", (e)=>{stopDraw(e)} );
-
-        }
-
-        function removeEventListeners(){
-            window.removeEventListener("resize",resize)
-            canvas.removeEventListener("pointerdown", prepDraw());
-            canvas.removeEventListener("pointermove", draw());
-            canvas.removeEventListener("pointerup", stopDraw());
-            canvas.removeEventListener("pointerleave", stopDraw());
-
-        }
-
         function restore(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -79,15 +57,14 @@
             canvas.height = canvas.offsetHeight;
             restore();
         }
-
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
         
-        
+        window.addEventListener("resize", debounce(resize,200) );
         resize();
 
         isMounted = true;
-        return ()=>{removeEventListeners()}
+        return ()=>{
+            window.removeEventListener("resize",resize)
+        }
     })
 
     /**
