@@ -10,7 +10,10 @@
 
     <Loading bind:mounted={canvasMounted} />
 
-    <Canvas  bind:isMounted={canvasMounted} />
+    <Canvas 
+        bind:isMounted={canvasMounted}
+    />
+
 
 </main>
 

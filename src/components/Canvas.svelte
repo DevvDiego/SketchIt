@@ -1,15 +1,17 @@
 <script>
     import { onMount } from "svelte";
-
     
-    export let _class = "";
+    // export let _class = "";
     export let isMounted = false;
+
 
     let canvas;
     let ctx;
+    let actions = [];
+    let is_drawing = false;
     let config = {
-        fillStyle: "white",
-        strokeStyle: "orange",
+        fill: "#ffffff",
+        penColor: "#000000",
         lineWidth: "4",
         lineCap: "round",
         lineJoin: "round",
@@ -18,43 +20,45 @@
     // let scale = 1;
     // let scaleStep = 0.1;
 
-    let actions = [];
-
-    let is_drawing = false;
-    
     
     onMount(()=>{
         ctx = canvas.getContext("2d");
 
         function restore(){
-            // ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // ctx.fillRect(0, 0, canvas.width, canvas.height)
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-            //No actions to draw
-            if ( actions.length < 1 ) {return};
+        //No actions to draw
+        if ( actions.length < 1 ) {return};
 
-            // Redraw all actions
-            for (let action of actions) {
+        // Redraw all actions
+        for (let action of actions) {
 
-                if (action.type === 'begin') {
-                    ctx.beginPath();
-                    ctx.moveTo(action.x, action.y);
+            if(action.type === "background"){
+                ctx.fillStyle = action.config.fill;
 
-                } else if (action.type === 'draw') {
-                    ctx.fillStyle = action.config.fillStyle;
-                    ctx.strokeStyle = action.config.strokeStyle;
-                    ctx.lineWidth = action.config.lineWidth;
-                    ctx.lineCap = action.config.lineCap;
-                    ctx.lineJoin = action.config.lineJoin;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.stroke();
 
-                    ctx.lineTo(action.x, action.y);
-                    ctx.stroke();
+            } else if (action.type === 'begin') {
+                ctx.beginPath();
+                ctx.moveTo(action.x, action.y);
 
-                }
+            } else if (action.type === 'draw') {
+                ctx.fillStyle = action.config.fill;
+                ctx.strokeStyle = action.config.penColor;
+                ctx.lineWidth = action.config.lineWidth;
+                ctx.lineCap = action.config.lineCap;
+                ctx.lineJoin = action.config.lineJoin;
+
+                ctx.lineTo(action.x, action.y);
+                ctx.stroke();
 
             }
+
         }
-        
+        }
+    
         function resize(){
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
@@ -62,23 +66,30 @@
             restore();
         }
 
+        
+
         window.addEventListener("resize", debounce(resize,200) );
+        
         resize();
 
-        //Call config after resize due to it being the last config from the user
-        //Restablish user config
-        ctx.fillStyle = config.fillStyle;
-        ctx.strokeStyle = config.strokeStyle;
-        ctx.lineWidth = config.lineWidth;
-        ctx.lineCap = config.lineCap;
-        ctx.lineJoin = config.lineJoin;
-
+        //Call after first rezise to set the last config
+        setConfig();
+        drawBackground();
 
         isMounted = true;
         return ()=>{
-            window.removeEventListener("resize",resize)
+            window.removeEventListener("resize", resize())
         }
     })
+
+
+    function setConfig(){
+        ctx.fillStyle = config.fill;
+        ctx.strokeStyle = config.penColor;
+        ctx.lineWidth = config.lineWidth;
+        ctx.lineCap = config.lineCap;
+        ctx.lineJoin = config.lineJoin;
+    }
 
     /**
      * 
@@ -101,10 +112,24 @@
         };
     };
 
+    function drawBackground(){
+        setConfig();
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        // Guarda la acción de dibujo en el array de acciones
+        actions.push({
+            type: 'background',
+            config: config
+        });
+
+        ctx.stroke();
+    }
 
     function prepDraw(e){
         is_drawing = true;
 
+        setConfig();
+        console.log(config);
         ctx.beginPath();
         ctx.moveTo(
             e.clientX - canvas.offsetLeft,
@@ -120,8 +145,6 @@
 
     }
 
-    //why i used touch none: 
-    //https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not/48254578#48254578
     function draw(e){
         
         if( !is_drawing ) {return;}
@@ -138,6 +161,8 @@
             y: e.clientY - canvas.offsetTop,
             config: config
         });
+
+
 
         ctx.stroke();
         
@@ -164,7 +189,8 @@
 
 
     
-
+//why i used touch none: 
+//https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not/48254578#48254578
 </script>
 
 <canvas
@@ -175,17 +201,43 @@
     on:pointerup|preventDefault={stopDraw}
     on:pointerleave|preventDefault={stopDraw}
 
-    class=" {_class} touch-none 
-            border-secondary-500 rounded-t-xl
-            border-b-[1px]
+    class=" touch-none 
+            border-b-[1px] border-secondary-500
+            rounded-t-xl
             w-full
             "
 > 
 
 </canvas>
 
+<ul>
+
+    <li>
+        <input type="color" bind:value={config.penColor}>
+    </li>
+
+    <li>
+        <input
+        bind:value={config.lineWidth}
+        class="" 
+        type="range" name="size" max="20.5" min="1" step="1.5"
+        >
+    </li>
+
+    <!-- <li>
+        <select name="penType" id="penType">
+            <option value="brush">Brush</option>
+            <option value="spray">Spray</option>
+        </select>
+    </li> -->
+
+</ul>
+
 <style>
     canvas{
         min-height: 75vh;
+    }
+    ul{
+        height: 25vh;
     }
 </style>
