@@ -25,38 +25,37 @@
         ctx = canvas.getContext("2d");
 
         function restore(){
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // ctx.fillRect(0, 0, canvas.width, canvas.height)
+            // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-        //No actions to draw
-        if ( actions.length < 1 ) {return};
+            //No actions to draw
+            if ( actions.length < 1 ) {return};
 
-        // Redraw all actions
-        for (let action of actions) {
+            // Redraw all actions
+            for (let action of actions) {
 
-            if(action.type === "background"){
-                ctx.fillStyle = action.config.fill;
+                if(action.type === "background"){
+                    ctx.fillStyle = action.fill;
 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.stroke();
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.stroke();
 
-            } else if (action.type === 'begin') {
-                ctx.beginPath();
-                ctx.moveTo(action.x, action.y);
+                }else if (action.type === 'begin') {
+                    ctx.beginPath();
+                    ctx.moveTo(action.x, action.y);
 
-            } else if (action.type === 'draw') {
-                ctx.fillStyle = action.config.fill;
-                ctx.strokeStyle = action.config.penColor;
-                ctx.lineWidth = action.config.lineWidth;
-                ctx.lineCap = action.config.lineCap;
-                ctx.lineJoin = action.config.lineJoin;
+                }else if (action.type === 'draw') {
+                    ctx.fillStyle = action.fill;
+                    ctx.strokeStyle = action.penColor;
+                    ctx.lineWidth = action.lineWidth;
+                    ctx.lineCap = action.lineCap;
+                    ctx.lineJoin = action.lineJoin;
 
-                ctx.lineTo(action.x, action.y);
-                ctx.stroke();
+                    ctx.lineTo(action.x, action.y);
+                    ctx.stroke();
 
+                }
             }
-
-        }
         }
     
         function resize(){
@@ -119,7 +118,11 @@
         // Guarda la acción de dibujo en el array de acciones
         actions.push({
             type: 'background',
-            config: config
+            fill: config.fill,
+            penColor: config.penColor,
+            lineWidth: config.lineWidth,
+            lineCap: config.lineCap,
+            lineJoin: config.lineJoin
         });
 
         ctx.stroke();
@@ -133,17 +136,24 @@
         ctx.beginPath();
         ctx.moveTo(
             e.clientX - canvas.offsetLeft,
-            e.clientY - canvas.offsetTop);
+            e.clientY - canvas.offsetTop
+        );
 
-        // Guarda la acción de inicio de dibujo en el array de acciones
         actions.push({
             type: 'begin',
             x: e.clientX - canvas.offsetLeft,
             y: e.clientY - canvas.offsetTop,
-            config: config
+            
+            //Copy properties
+            fill: config.fill,
+            penColor: config.penColor,
+            lineWidth: config.lineWidth,
+            lineCap: config.lineCap,
+            lineJoin: config.lineJoin
         });
 
     }
+
 
     function draw(e){
         
@@ -154,20 +164,23 @@
             e.clientY - canvas.offsetTop
         );
 
-        // Guarda la acción de dibujo en el array de acciones
         actions.push({
             type: 'draw',
             x: e.clientX - canvas.offsetLeft,
             y: e.clientY - canvas.offsetTop,
-            config: config
+
+            //Copy properties
+            fill: config.fill,
+            penColor: config.penColor,
+            lineWidth: config.lineWidth,
+            lineCap: config.lineCap,
+            lineJoin: config.lineJoin
         });
 
-
-
         ctx.stroke();
-        
-        
+     
     }
+
 
     function stopDraw(){
         is_drawing = false;
